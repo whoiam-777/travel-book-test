@@ -75,7 +75,7 @@
       align-items:center;
       justify-content:space-between;
       gap: 18px;
-      padding: 18px 0; /* FIX: горизонталь задаёт .wrap */
+      padding: 18px 0; /* горизонталь задаёт .wrap */
     }
     .brand{
       font-family: Oswald, sans-serif;
@@ -83,6 +83,7 @@
       font-weight:500;
       color: var(--pink);
       font-size: 18px;
+      white-space: nowrap;
     }
     .menu{
       display:flex;
@@ -93,6 +94,7 @@
       color:#4b4b4b;
       font-size: 13px;
       white-space:nowrap;
+      min-width: 0;
     }
     .menu a{
       opacity:.9;
@@ -124,6 +126,7 @@
       background:#fff;
       align-items:center; justify-content:center;
       cursor:pointer;
+      flex: 0 0 auto;
     }
     .burger span{
       display:block;
@@ -177,12 +180,12 @@
       position: relative;
       min-height: calc(100svh - var(--headerH));
       display:flex;
-      flex-direction: column; /* ВАЖНО: чтобы бар был снизу, а не справа */
+      flex-direction: column;
       align-items:stretch;
       overflow:hidden;
       background:
         radial-gradient(900px 520px at 45% 18%, rgba(255,47,144,.08), rgba(255,255,255,0) 60%),
-        #fff; /* FIX: вместо невалидного background: ...; */
+        #fff;
     }
 
     /* right pink sidebar hint */
@@ -193,6 +196,7 @@
       height: 100%;
       background: linear-gradient(180deg, rgba(255,47,144,.15), rgba(255,47,144,.05));
       border-left: 1px solid rgba(255,47,144,.25);
+      pointer-events:none;
     }
     .side-accent:after{
       content:"";
@@ -209,12 +213,22 @@
       position: relative;
       flex: 1 1 auto;
       width: 100%;
-      min-width: 0; /* чтобы grid не вылазил и не создавал боковые сдвиги */
+      min-width: 0;
       display: grid;
-      grid-template-columns: minmax(0,1fr) minmax(320px, 700px) minmax(0,1fr); /* FIX: меньше риск overflow */
-      align-items: end;
-      padding: 34px 0 0; /* FIX: горизонталь задаёт .wrap */
+      grid-template-columns: minmax(0,1fr) minmax(320px, 700px) minmax(0,1fr);
+      align-items: stretch;
+
+      /* ВАЖНО: НЕ трогаем left/right padding, чтобы работал .wrap */
+      padding-top: 34px;
+      padding-bottom: 0;
     }
+
+    /* слои: слова поверх фото */
+    .hero-left, .hero-right{
+      position: relative;
+      z-index: 3;
+    }
+
     .hero-left{
       padding-bottom: 90px;
     }
@@ -233,29 +247,50 @@
       text-transform: uppercase;
       font-size: clamp(72px, 9vw, 160px);
       line-height: .9;
+      margin: 0;
     }
+
     .hero-mid{
+      position: relative;
+      z-index: 1;
       display:flex;
       justify-content:center;
       align-items:flex-end;
       padding-bottom: 0;
     }
+
+    /* мягкое “свечение” за фото на десктопе */
+    .hero-mid::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom: 120px;
+      transform: translateX(-50%);
+      width: min(760px, 58vw);
+      height: min(560px, 44vw);
+      background: radial-gradient(closest-side, rgba(255,47,144,.18), rgba(255,255,255,0) 70%);
+      pointer-events:none;
+    }
+
     .hero-photo{
-      width: min(420px, 92%);
-      aspect-ratio: 4/5;
+      width: min(760px, 56vw);
+      height: clamp(520px, 72vh, 860px);
       border-radius: 0;
       overflow:hidden;
-      transform: translateY(12px);
-      filter: drop-shadow(0 18px 26px rgba(0,0,0,.08));
+      transform: none;
+      filter: none;
       background: transparent;
+      box-shadow: none;
     }
     .hero-photo img{
       width:100%;
       height:100%;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center 20%;
       background: transparent;
       display:block;
     }
+
     .hero-right{
       text-align:right;
       padding-bottom: 90px;
@@ -266,10 +301,9 @@
       width:100%;
       height: 62px;
 
-      /* фикс: чтобы на телефоне не “уезжало” вправо и всегда было снизу */
       display:flex;
-      flex: 0 0 62px;      /* не даём растягиваться/схлопываться как flex-элементу */
-      align-self: stretch; /* всегда на всю ширину контейнера hero */
+      flex: 0 0 62px;
+      align-self: stretch;
 
       background: var(--pink);
       color:#fff;
@@ -510,13 +544,12 @@
       box-shadow: var(--shadow);
       transition: transform .35s ease, box-shadow .35s ease;
 
-      /* FIX: единый трансформ через переменные (чтобы hover не ломал translateX(-50%)) */
       --tx: 0px;
       --ty: 0px;
       transform: translate(var(--tx), var(--ty));
     }
     .quote:hover{
-      transform: translate(var(--tx), calc(var(--ty) - 4px)); /* сохраняем X-смещение */
+      transform: translate(var(--tx), calc(var(--ty) - 4px));
       box-shadow: var(--shadow2);
     }
     .q-text{
@@ -547,14 +580,13 @@
       white-space:nowrap;
     }
 
-    /* positions similar to screenshot */
     .q1{left:0; top:30px}
-    .q2{left:42%; top:130px; --tx:-50%} /* FIX: вместо transform */
+    .q2{left:42%; top:130px; --tx:-50%}
     .q3{right:0; top:0}
     .q4{right:0; top:310px}
     .q5{left:180px; top:330px}
     .q6{left:18px; bottom:60px}
-    .q7{left:58%; bottom:90px; --tx:-50%} /* FIX: вместо transform */
+    .q7{left:58%; bottom:90px; --tx:-50%}
 
     /* ====== About hero ====== */
     .aboutHero{
@@ -777,19 +809,14 @@
       .cta-outline{display:none}
       .burger{display:flex}
 
-      /* ===== HERO MOBILE (как на референсе) ===== */
-      .hero{
-        /* чтобы фон был ровный, без “грязи” */
-        background:
-          radial-gradient(900px 520px at 45% 18%, rgba(255,47,144,.08), rgba(255,255,255,0) 60%),
-          #fff;
-      }
-
+      /* ===== HERO MOBILE (фиксы: ничего не уезжает за край) ===== */
       .hero-grid{
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;   /* ВАЖНО: фото = весь остаток высоты */
+        grid-template-rows: auto auto 1fr;
         align-items: start;
         gap: 0;
+
+        /* только вертикаль, горизонталь оставляет .wrap */
         padding-top: 18px;
         padding-bottom: 0;
       }
@@ -820,7 +847,7 @@
         letter-spacing: .01em;
       }
 
-      /* ENGLISH (чуть “поджать” к SPEAK как на рефе) */
+      /* ENGLISH */
       .hero-right{
         margin-top: -10px;
       }
@@ -831,7 +858,7 @@
         letter-spacing: .01em;
       }
 
-      /* Фото должно занимать весь остаток до CTA */
+      /* Фото занимает остаток */
       .hero-mid{
         align-self: stretch;
         height: 100%;
@@ -841,24 +868,31 @@
         margin-top: 6px;
       }
 
+      .hero-mid::before{
+        bottom: 60px;
+        width: min(560px, 82vw);
+        height: min(420px, 62vw);
+        opacity: .9;
+      }
+
       .hero-photo{
         width: 100%;
-        max-width: none;     /* убрать 380px */
-        height: 100%;        /* растянуть */
-        aspect-ratio: auto;  /* убрать 4/5 */
-        transform: none;     /* убрать сдвиг вниз */
-        filter: none;        /* убрать drop-shadow (он делает “прямоугольник”) */
-        overflow: visible;
+        max-width: none;
+        height: 100%;
+        transform: none;
+        filter: none;
+        overflow: hidden; /* FIX: чтобы ничего не вылазило */
       }
 
       .hero-photo img{
         width: 100%;
         height: 100%;
-        object-fit: cover;          /* эффект как на референсе */
-        object-position: center bottom;
+        object-fit: cover;
+        object-position: center 18%;
         display: block;
         background: transparent;
       }
+
       .manifest-grid{grid-template-columns: 1fr; gap: 28px}
       .manifest-left{font-size: clamp(28px, 7vw, 44px)}
 
@@ -902,7 +936,6 @@
         box-shadow: none;
         border: 1px solid var(--line);
 
-        /* FIX: сбрасываем смещения */
         --tx: 0px;
         --ty: 0px;
       }
@@ -912,12 +945,10 @@
         box-shadow: none;
       }
 
-      /* Порядок карточек на мобиле как на твоём скрине:
-         Катя → Светлана → Александр → Даниил → далее остальные */
-      .q1{order: 1}  /* Катя */
-      .q4{order: 2}  /* Светлана */
-      .q3{order: 3}  /* Александр */
-      .q2{order: 4}  /* Даниил */
+      .q1{order: 1}
+      .q4{order: 2}
+      .q3{order: 3}
+      .q2{order: 4}
       .q5{order: 5}
       .q7{order: 6}
       .q6{order: 7}
@@ -1320,7 +1351,7 @@
   </main>
 
   <script>
-    // FIX: динамически считаем высоту шапки, чтобы hero не зависел от "магического" 78px
+    // динамически считаем высоту шапки, чтобы hero не зависел от "магического" 78px
     const headerEl = document.querySelector('header');
     function setHeaderHeightVar(){
       if(!headerEl) return;
