@@ -26,6 +26,8 @@
       --radius: 18px;
       --shadow: 0 10px 28px rgba(0,0,0,.06);
       --shadow2: 0 14px 34px rgba(0,0,0,.08);
+
+      --headerH: 78px; /* будет обновляться JS-ом */
     }
 
     *{box-sizing:border-box}
@@ -73,7 +75,7 @@
       align-items:center;
       justify-content:space-between;
       gap: 18px;
-      padding: 18px var(--pad);
+      padding: 18px 0; /* FIX: горизонталь задаёт .wrap */
     }
     .brand{
       font-family: Oswald, sans-serif;
@@ -171,15 +173,17 @@
     .mp-cta{margin-top:10px}
 
     /* ====== Hero ====== */
-.hero{
-  position: relative;
-  min-height: calc(100svh - 78px);
-  display:flex;
-  flex-direction: column; /* ВАЖНО: чтобы бар был снизу, а не справа */
-  align-items:stretch;
-  overflow:hidden;
-  background: ...;
-}
+    .hero{
+      position: relative;
+      min-height: calc(100svh - var(--headerH));
+      display:flex;
+      flex-direction: column; /* ВАЖНО: чтобы бар был снизу, а не справа */
+      align-items:stretch;
+      overflow:hidden;
+      background:
+        radial-gradient(900px 520px at 45% 18%, rgba(255,47,144,.08), rgba(255,255,255,0) 60%),
+        #fff; /* FIX: вместо невалидного background: ...; */
+    }
 
     /* right pink sidebar hint */
     .side-accent{
@@ -201,16 +205,16 @@
       opacity:.65;
     }
 
-.hero-grid{
-  position: relative;
-  flex: 1 1 auto;
-  width: 100%;
-  min-width: 0;                 /* чтобы grid не вылазил и не создавал боковые сдвиги */
-  display: grid;
-  grid-template-columns: 1fr minmax(520px, 700px) 1fr;
-  align-items: end;
-  padding: 34px var(--pad) 0;
-}
+    .hero-grid{
+      position: relative;
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 0; /* чтобы grid не вылазил и не создавал боковые сдвиги */
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(320px, 700px) minmax(0,1fr); /* FIX: меньше риск overflow */
+      align-items: end;
+      padding: 34px 0 0; /* FIX: горизонталь задаёт .wrap */
+    }
     .hero-left{
       padding-bottom: 90px;
     }
@@ -243,6 +247,7 @@
       overflow:hidden;
       transform: translateY(12px);
       filter: drop-shadow(0 18px 26px rgba(0,0,0,.08));
+      background: transparent;
     }
     .hero-photo img{
       width:100%;
@@ -256,24 +261,24 @@
       padding-bottom: 90px;
     }
 
-.hero-bar{
-  margin-top:auto;
-  width:100%;
-  height: 62px;
+    .hero-bar{
+      margin-top:auto;
+      width:100%;
+      height: 62px;
 
-  /* фикс: чтобы на телефоне не “уезжало” вправо и всегда было снизу */
-  display:flex;
-  flex: 0 0 62px;      /* не даём растягиваться/схлопываться как flex-элементу */
-  align-self: stretch; /* всегда на всю ширину контейнера hero */
+      /* фикс: чтобы на телефоне не “уезжало” вправо и всегда было снизу */
+      display:flex;
+      flex: 0 0 62px;      /* не даём растягиваться/схлопываться как flex-элементу */
+      align-self: stretch; /* всегда на всю ширину контейнера hero */
 
-  background: var(--pink);
-  color:#fff;
-  align-items:center;
-  justify-content:center;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-size: 12px;
-}
+      background: var(--pink);
+      color:#fff;
+      align-items:center;
+      justify-content:center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+    }
 
     /* ====== Section base ====== */
     section{
@@ -504,9 +509,14 @@
       padding: 22px 22px 18px;
       box-shadow: var(--shadow);
       transition: transform .35s ease, box-shadow .35s ease;
+
+      /* FIX: единый трансформ через переменные (чтобы hover не ломал translateX(-50%)) */
+      --tx: 0px;
+      --ty: 0px;
+      transform: translate(var(--tx), var(--ty));
     }
     .quote:hover{
-      transform: translateY(-4px);
+      transform: translate(var(--tx), calc(var(--ty) - 4px)); /* сохраняем X-смещение */
       box-shadow: var(--shadow2);
     }
     .q-text{
@@ -539,12 +549,12 @@
 
     /* positions similar to screenshot */
     .q1{left:0; top:30px}
-    .q2{left:42%; top:130px; transform: translateX(-50%)}
+    .q2{left:42%; top:130px; --tx:-50%} /* FIX: вместо transform */
     .q3{right:0; top:0}
     .q4{right:0; top:310px}
     .q5{left:180px; top:330px}
     .q6{left:18px; bottom:60px}
-    .q7{left:58%; bottom:90px; transform: translateX(-50%)}
+    .q7{left:58%; bottom:90px; --tx:-50%} /* FIX: вместо transform */
 
     /* ====== About hero ====== */
     .aboutHero{
@@ -817,17 +827,20 @@
         right: auto !important;
         top: auto !important;
         bottom: auto !important;
-        transform: none !important;
 
         width: 100%;
         max-width: none;
 
         box-shadow: none;
         border: 1px solid var(--line);
+
+        /* FIX: сбрасываем смещения */
+        --tx: 0px;
+        --ty: 0px;
       }
 
       .quote:hover{
-        transform: none;
+        transform: translate(0px, 0px);
         box-shadow: none;
       }
 
@@ -918,7 +931,7 @@
 
         <div class="hero-mid reveal">
           <div class="hero-photo" role="img" aria-label="Фото автора">
-            <img src="images/olga-hero.png" alt="">
+            <img src="images/olga-hero.png" alt="Ольга Говердовская — фото на первом экране">
           </div>
         </div>
 
@@ -1124,7 +1137,7 @@
 
         <div class="aboutPhoto reveal">
           <div class="frame" role="img" aria-label="Фото преподавателя">
-            <img src="images/olga-about.png" alt="">
+            <img src="images/olga-about.png" alt="Ольга Говердовская — фото в блоке о преподавателе">
           </div>
         </div>
 
@@ -1212,7 +1225,7 @@
         </div>
 
         <div class="f-photo" aria-label="Фото" role="img">
-          <img src="images/footer-photo.jpg" alt="">
+          <img src="images/footer-photo.jpg" alt="Фото в футере">
         </div>
       </div>
 
@@ -1239,6 +1252,16 @@
   </main>
 
   <script>
+    // FIX: динамически считаем высоту шапки, чтобы hero не зависел от "магического" 78px
+    const headerEl = document.querySelector('header');
+    function setHeaderHeightVar(){
+      if(!headerEl) return;
+      const h = Math.round(headerEl.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--headerH', h + 'px');
+    }
+    setHeaderHeightVar();
+    window.addEventListener('resize', setHeaderHeightVar);
+
     // Mobile menu
     const burger = document.getElementById('burger');
     const mobilePanel = document.getElementById('mobilePanel');
