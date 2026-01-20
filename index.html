@@ -771,73 +771,31 @@
       min-width: 220px;
     }
 
-@media (max-width: 980px){
+    /* ====== Responsive ====== */
+    @media (max-width: 980px){
+      .menu{display:none}
+      .cta-outline{display:none}
+      .burger{display:flex}
 
-  /* ===== HERO (mobile like reference) ===== */
-  .hero-grid{
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "titles"
-      "photo";
-    align-items: start;
-    gap: 18px;
-    padding-top: 22px;
-    padding-bottom: 0;
-  }
+      .hero-grid{
+        grid-template-columns: 1fr;
+        align-items:center;
+        gap: 18px;
+        padding-bottom: 0;
+      }
+      .hero-left, .hero-right{padding-bottom: 0; text-align:left}
+      .hero-right{order:3}
+      .hero-mid{order:2}
+      .hero-left{order:1}
+      .hero-word{font-size: clamp(58px, 16vw, 110px)}
+      .hero-photo{max-width: 380px; margin: 0 auto}
+      .hero-kicker{max-width: 520px}
 
-  .hero-left{
-    grid-area: titles;
-    padding-bottom: 0;
-    text-align: left;
-    position: relative;
-    padding-top: 18px; /* чтобы заголовок не "лип" к шапке */
-  }
+      .manifest-grid{grid-template-columns: 1fr; gap: 28px}
+      .manifest-left{font-size: clamp(28px, 7vw, 44px)}
 
-  /* Kicker справа, как на референсе */
-  .hero-kicker{
-    position: absolute;
-    top: 18px;
-    right: 0;
-    max-width: 190px;
-    text-align: right;
-    margin: 0;
-  }
-
-  /* SPEAK */
-  .hero-left .hero-word{
-    font-size: clamp(56px, 18vw, 86px);
-    line-height: .82;
-    letter-spacing: .01em;
-  }
-
-  /* ENGLISH кладём в тот же слой "titles", но ниже SPEAK */
-  .hero-right{
-    grid-area: titles;
-    padding-bottom: 0;
-    text-align: left;
-    align-self: start;
-    justify-self: start;
-    margin-top: 56px; /* расстояние между SPEAK и ENGLISH */
-  }
-
-  .hero-right .hero-word{
-    font-size: clamp(96px, 28vw, 140px);
-    line-height: .82;
-    letter-spacing: .01em;
-  }
-
-  /* Фото отдельной строкой ниже заголовка */
-  .hero-mid{
-    grid-area: photo;
-    justify-content: center;
-    align-items: flex-end;
-  }
-
-  .hero-photo{
-    max-width: 380px;
-    margin: 0 auto;
-  }
-}
+      .choose-grid{grid-template-columns: 1fr; gap: 26px}
+      .cards{gap: 38px}
 
       /* ===== Reviews mobile: list like screenshot + correct order ===== */
       .reviews-stage{
