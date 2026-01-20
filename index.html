@@ -777,73 +777,88 @@
       .cta-outline{display:none}
       .burger{display:flex}
 
-            /* ===== HERO (mobile like reference, FIX overlap) ===== */
+      /* ===== HERO MOBILE (как на референсе) ===== */
+      .hero{
+        /* чтобы фон был ровный, без “грязи” */
+        background:
+          radial-gradient(900px 520px at 45% 18%, rgba(255,47,144,.08), rgba(255,255,255,0) 60%),
+          #fff;
+      }
+
       .hero-grid{
-        position: relative;
         grid-template-columns: 1fr;
-        grid-template-areas:
-          "speak"
-          "english"
-          "photo";
+        grid-template-rows: auto auto 1fr;   /* ВАЖНО: фото = весь остаток высоты */
         align-items: start;
         gap: 0;
-        padding-top: 22px;
+        padding-top: 18px;
         padding-bottom: 0;
       }
 
-      /* SPEAK line */
-      .hero-left{
-        grid-area: speak;
-        padding: 18px 0 0;
+      .hero-left,
+      .hero-right{
+        padding-bottom: 0;
         text-align: left;
       }
 
-      /* Kicker справа сверху (не внутри SPEAK, а поверх общего блока) */
+      /* Kicker справа сверху */
+      .hero-left{ position: relative; }
       .hero-kicker{
         position: absolute;
-        top: 22px;
+        top: 6px;
         right: 0;
-        max-width: 190px;
+        max-width: 210px;
         text-align: right;
         margin: 0;
         z-index: 3;
       }
 
+      /* SPEAK */
       .hero-left .hero-word{
-        font-size: clamp(56px, 18vw, 86px);
+        font-size: clamp(58px, 18vw, 92px);
         line-height: .82;
-        letter-spacing: .01em;
         margin: 0;
+        letter-spacing: .01em;
       }
 
-      /* ENGLISH line */
+      /* ENGLISH (чуть “поджать” к SPEAK как на рефе) */
       .hero-right{
-        grid-area: english;
-        padding: 0;
-        text-align: left;
-        margin-top: -6px;   /* плотнее как на референсе */
+        margin-top: -10px;
       }
-
       .hero-right .hero-word{
-        font-size: clamp(96px, 28vw, 140px);
-        line-height: .82;
-        letter-spacing: .01em;
+        font-size: clamp(100px, 30vw, 150px);
+        line-height: .80;
         margin: 0;
+        letter-spacing: .01em;
       }
 
-      /* Photo */
+      /* Фото должно занимать весь остаток до CTA */
       .hero-mid{
-        grid-area: photo;
-        justify-content: center;
+        align-self: stretch;
+        height: 100%;
+        display: flex;
         align-items: flex-end;
-        margin-top: 18px;
+        justify-content: center;
+        margin-top: 6px;
       }
 
       .hero-photo{
-        max-width: 380px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: none;     /* убрать 380px */
+        height: 100%;        /* растянуть */
+        aspect-ratio: auto;  /* убрать 4/5 */
+        transform: none;     /* убрать сдвиг вниз */
+        filter: none;        /* убрать drop-shadow (он делает “прямоугольник”) */
+        overflow: visible;
       }
 
+      .hero-photo img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;          /* эффект как на референсе */
+        object-position: center bottom;
+        display: block;
+        background: transparent;
+      }
       .manifest-grid{grid-template-columns: 1fr; gap: 28px}
       .manifest-left{font-size: clamp(28px, 7vw, 44px)}
 
